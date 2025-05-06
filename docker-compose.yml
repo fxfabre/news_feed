@@ -5,4 +5,4 @@ services:
     ports:
       - 5678:5678
     volumes:
-      - $PWD/.n8n:/home/node/.n8n
+      - $PWD/n8n_service/.n8n:/home/node/.n8n

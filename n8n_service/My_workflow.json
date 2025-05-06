@@ -1,0 +1,70 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMonth"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "Actualité de l'intelligence artificielle"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "afe42e8d-7726-4d98-b34d-44e5ef1f1a5c",
+      "name": "Gmail Trigger",
+      "credentials": {
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "from unidecode import unidecode\n\nfor item in _input.all():\n  content = item.json.textAsHtml\n  sender = item.json[\"from\"][\"value\"][0][\"address\"]\n  print(sender)\nreturn {\"sneder\": unidecode(sender)}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        0
+      ],
+      "id": "31d1cc7c-aafd-4726-9bc0-7eefaf397761",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a8f3c061-7289-495b-a6f0-7d472920a125",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0a81407c96c73615e499b5fa45e736dce4ab4b5afe2d739580a9416e97fa6ba4"
+  },
+  "id": "nOOB7uEq4KQmpQPM",
+  "tags": []
+}
