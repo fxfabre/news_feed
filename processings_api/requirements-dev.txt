@@ -1,0 +1,12 @@
+-r requirements.txt
+
+# Dev tools
+jupyterlab
+matplotlib
+
+# Tests
+parameterized
+coverage
+pytest
+pytest-cov
+httpx

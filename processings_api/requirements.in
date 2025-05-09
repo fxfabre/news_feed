@@ -1,0 +1,15 @@
+# API
+fastapi
+fastapi-utils
+uvicorn-worker
+gunicorn
+orjson
+python-json-logger
+
+# missing dependency in fastapi_utils
+typing-inspect
+
+# Libs for processings
+pandas
+unidecode
+beautifulsoup4
