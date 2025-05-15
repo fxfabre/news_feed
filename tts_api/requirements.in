@@ -1,0 +1,20 @@
+# Text to speech
+transformers[torch]
+scipy
+pynvml
+
+# API
+fastapi
+fastapi-utils
+uvicorn[standard]
+gunicorn
+httptools
+inotify
+uvloop
+uvicorn-worker
+
+# config
+python-json-logger
+
+# API libs
+pydantic

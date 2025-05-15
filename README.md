@@ -29,7 +29,7 @@ POSTGRES_DB=$database_name
 
 ## Template projects used
 To use a template
-- go the the url, select "use for free" and copy workflow to json and save it in a file.
+- go to the url, select "use for free" and copy workflow to json and save it in a file.
 - Then create a new workflow, top right > import from file
 Template url :
 - https://n8n.io/workflows/2433-daily-podcast-summary/

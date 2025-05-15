@@ -2,4 +2,4 @@ from pydantic import BaseModel
 
 
 class EmailContent(BaseModel):
-    html_content: str
+    text_as_html: str
