@@ -1,6 +1,10 @@
-FROM python:3.12-bullseye
+FROM python:3.12-bookworm
 
 WORKDIR /app
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends libavutil57 \
+ && rm -rf /var/lib/apt/lists/*
 
 RUN --mount=type=bind,source=requirements.txt,target=/tmp/requirements.txt \
     --mount=type=cache,target=/root/.cache/pip \

@@ -65,6 +65,7 @@ select = [
 ignore = [
     "B008",  # do not perform function calls in argument defaults
     "D417",  # requires documentation for every function parameter.
+#    "I001",  # Import block un-sorted
 ]
 
 [tool.ruff.lint.pydocstyle]

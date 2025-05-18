@@ -1,72 +1,48 @@
 import logging
-from typing import Iterable
+
+import nltk
 import numpy as np
-import spacy
+from bark import SAMPLE_RATE, semantic_to_waveform
+from bark.generation import generate_text_semantic
 from fastapi import APIRouter
-from fastapi.responses import JSONResponse, StreamingResponse, ORJSONResponse
-from spacy.tokens import Span
+from fastapi.responses import ORJSONResponse
 
 from tts_api.models.tts_request import TtsRequest
 from tts_api.models.wavefile_content import AudioSegment
-from transformers import AutoProcessor, AutoModel
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 MODEL_NAME = "suno/bark-small"
+GEN_TEMP = 0.6
 
 
 @router.post("/", response_model=AudioSegment, response_class=ORJSONResponse)
 async def generate_speech(body: TtsRequest) -> AudioSegment:
-    logger.info("Loading model %s", MODEL_NAME)
-    processor = AutoProcessor.from_pretrained(MODEL_NAME, cache_dir="/model")
-    model = AutoModel.from_pretrained(MODEL_NAME, cache_dir="/model")
-    voice_preset = f"v2/{body.language}_speaker_2"
-
-    # return StreamingResponse(
-    #     text_to_audio(processor, model, body.text, voice_preset, body.language),
-    #     media_type="text/json"
-    # )
-    return await text_to_audio(processor, model, body.text, voice_preset, body.language)
-
-
-async def text_to_audio(processor, model, text: str, voice_preset: str, language: str) -> AudioSegment:
-    spacy_model = {
-        "fr": "fr_core_news_sm",
-        "en": "en_core_web_sm",
-    }[language]
-    nlp = spacy.load(spacy_model)
-
-    audios: list[dict] = []
-    for sentense in nlp(text).sents:
-        sentense: Span
-        logger.debug("Convert to audio : %s", sentense)
-        audio = generate_audio_for(processor, model, sentense.text, voice_preset)
-        audios.append(audio)
-
-    if len(audios) == 0:
-        return AudioSegment(rate=0, data=[], content_type="audio/wav")
+    pieces = list(text_to_audio(body.text, body.language))
 
     return AudioSegment(
-        rate=audios[0]["rate"],
-        data=np.concatenate(audio["data"] for audio in audios),
-        content_type="audio/wav"
+        rate=SAMPLE_RATE,
+        data=np.concatenate(pieces).tolist(),
+        content_type="audio/wav",
     )
 
 
-def generate_audio_for(processor, model, sentense: str, voice_preset: str) -> dict:
-    inputs = processor(
-        text=sentense,
-        voice_preset=voice_preset,
-        return_tensors="pt",
-    )
+def text_to_audio(text: str, language: str) -> AudioSegment:
+    silence = np.zeros(int(0.25 * SAMPLE_RATE))  # quarter second of silence
+    voice_preset = f"v2/{language}_speaker_2"
 
-    logger.info("Start generating speech using voice preset: %s", voice_preset)
-    speech_values = model.generate(**inputs, do_sample=True)
-    data = speech_values.cpu().numpy().squeeze()
+    for sentence in nltk.sent_tokenize(text):
+        logger.debug("Convert to audio : %s", sentence)
 
-    logger.info("Speech generation finished. Len: %s, dtype %s", len(data), data.dtype)
+        semantic_tokens = generate_text_semantic(
+            sentence,
+            history_prompt=voice_preset,
+            temp=GEN_TEMP,
+            min_eos_p=0.05,  # this controls how likely the generation is to end
+        )
 
-    return {
-        "rate": model.generation_config.sample_rate,
-        "data": data,
-    }
+        audio_array = semantic_to_waveform(
+            semantic_tokens,
+            history_prompt=voice_preset,
+        )
+        yield np.concatenate([audio_array, silence])

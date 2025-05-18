@@ -47,9 +47,11 @@ services:
     container_name: tts_api
     environment:
       - HF_HOME=/model
+      - SUNO_USE_SMALL_MODELS="1"
     ports:
       - 5011:5000
     expose:
       - 5000
     volumes:
-      - ~/.cache/huggingface/models:/model
+      - $HOME/.cache/huggingface/models:/model
+      - $HOME/.cache/suno:/root/.cache/suno
