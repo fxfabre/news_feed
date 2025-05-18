@@ -1,12 +1,12 @@
 import logging
 
-from fastapi import FastAPI
-from fastapi import Request
+from bark.generation import preload_models
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse, ORJSONResponse
 from fastapi_utils.timing import add_timing_middleware
-from starlette.responses import JSONResponse
 from starlette.responses import RedirectResponse
 
-from src.controllers import router
+from tts_api.controllers import router
 
 logger = logging.getLogger(__name__)
 
@@ -14,9 +14,10 @@ app = FastAPI(
     title="Text To Speech API",
     version="1.0",
     description="From text to voice",
-    default_response_class=JSONResponse,
+    default_response_class=ORJSONResponse,
     on_startup=[
-        lambda: logger.info("FastAPI ready")
+        preload_models,
+        lambda: logger.info("FastAPI ready"),
     ],
 )
 add_timing_middleware(app, record=logger.info, prefix="app")

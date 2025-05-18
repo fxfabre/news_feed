@@ -1,12 +1,18 @@
-FROM python:3.11-bullseye
+FROM python:3.12-bullseye
 
 WORKDIR /app
 
 RUN --mount=type=bind,source=requirements.txt,target=/tmp/requirements.txt \
-    --mount=type=cache,mode=0755,target=/root/.cache/pip \
+    --mount=type=cache,target=/root/.cache/pip \
     pip install -r /tmp/requirements.txt
 
 COPY config /app/config
-COPY src /app/src
+COPY tts_api /app/tts_api
 
-CMD ["gunicorn", "--config", "config/gunicorn.conf.py", "--worker-tmp-dir", "/dev/shm", "--log-config", "config/logging.ini", "src.fastapi_app:app"]
+CMD [ \
+    "gunicorn", \
+    "--config", "config/gunicorn.conf.py", \
+    "--worker-tmp-dir", "/dev/shm", \
+    "--log-config", "config/logging.ini", \
+    "tts_api.fastapi_app:app" \
+]

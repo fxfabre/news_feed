@@ -1,11 +1,11 @@
 import logging
 
 from pydantic import BaseModel
-from typing import List
 
 logger = logging.getLogger(__name__)
 
 
-class WavefileContent(BaseModel):
+class AudioSegment(BaseModel):
     rate: int
-    data: List[float]
+    data: list[float]
+    content_type: str = "audio/wav"

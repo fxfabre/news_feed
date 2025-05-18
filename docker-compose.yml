@@ -40,7 +40,7 @@ services:
     volumes:
       - $PWD/cache_articles:/data/cache_articles
 
-  tts-api:
+  tts_api:
     build:
       context: tts_api
       dockerfile: Dockerfile_tts_api
@@ -49,6 +49,7 @@ services:
       - HF_HOME=/model
     ports:
       - 5011:5000
+    expose:
+      - 5000
     volumes:
-      - ~/.local/huggingface/models:/model
-      - $PWD/text_to_speech:/app
+      - ~/.cache/huggingface/models:/model
