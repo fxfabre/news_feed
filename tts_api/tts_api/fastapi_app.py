@@ -1,5 +1,6 @@
 import logging
 
+import nltk
 from bark.generation import preload_models
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, ORJSONResponse
@@ -17,6 +18,7 @@ app = FastAPI(
     default_response_class=ORJSONResponse,
     on_startup=[
         preload_models,
+        lambda: nltk.download("punkt_tab"),
         lambda: logger.info("FastAPI ready"),
     ],
 )

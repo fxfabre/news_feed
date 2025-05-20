@@ -18,7 +18,7 @@ backlog = 2048
 #       range. You'll want to vary this a bit to find the best
 #       for your particular application's work load.
 # workers = 2 * os.cpu_count() + 1
-workers = 2
+workers = 1  # not enough ram for more
 
 #   worker_class - The type of workers to use. The default
 #       sync class should handle most 'normal' types of work
@@ -176,5 +176,6 @@ def when_ready(server) -> None:
 
 def worker_abort(worker):
     worker.log.info("worker received SIGABRT signal")
+
 
 # endregion

@@ -4,6 +4,9 @@ transformers[torch]
 nltk
 scipy
 pynvml
+orjson
+
+torch==2.5.1
 
 # API
 fastapi
