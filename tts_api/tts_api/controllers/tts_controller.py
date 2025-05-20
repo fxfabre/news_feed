@@ -18,7 +18,7 @@ router = APIRouter()
 GEN_TEMP = 0.6
 
 
-@router.post("/binary", response_class=Response)
+@router.post("/wav", response_class=Response)
 async def generate_speech(body: TtsRequest) -> Response:
     pieces = list(text_to_audio(body.text, body.language))
 
