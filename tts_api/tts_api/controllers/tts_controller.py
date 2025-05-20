@@ -1,6 +1,7 @@
 import io
 import logging
 import os.path
+from collections.abc import Generator
 
 import nltk
 import numpy as np
@@ -11,7 +12,6 @@ from fastapi.responses import Response
 from scipy.io.wavfile import write as write_wav
 
 from tts_api.models.tts_request import TtsRequest
-from tts_api.models.wavefile_content import AudioSegment
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -30,7 +30,7 @@ async def generate_speech(body: TtsRequest) -> Response:
     return Response(content=content, media_type="audio/wav")
 
 
-def text_to_audio(text: str, language: str) -> AudioSegment:
+def text_to_audio(text: str, language: str) -> Generator[np.array, None, None]:
     voice_preset = f"v2/{language}_speaker_2"
     cache_file = f"/tts_cache/{voice_preset}.json"
     os.makedirs(os.path.dirname(cache_file), exist_ok=True)
