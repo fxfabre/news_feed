@@ -1,0 +1,22 @@
+FROM python:3.11-bookworm
+
+WORKDIR /app
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends libavutil57 \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN --mount=type=bind,source=requirements.txt,target=/tmp/requirements.txt \
+    --mount=type=cache,target=/root/.cache/pip \
+    pip install -r /tmp/requirements.txt
+
+COPY config /app/config
+COPY tts_api /app/tts_api
+
+CMD [ \
+    "gunicorn", \
+    "--config", "config/gunicorn.conf.py", \
+    "--worker-tmp-dir", "/dev/shm", \
+    "--log-config", "config/logging.ini", \
+    "tts_api.fastapi_app:app" \
+]

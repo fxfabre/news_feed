@@ -13,3 +13,4 @@ typing-inspect
 pandas
 unidecode
 beautifulsoup4
+requests
