@@ -56,4 +56,5 @@ services:
       - $HOME/.cache/huggingface/models:/model
       - $HOME/.cache/suno:/root/.cache/suno
       - $HOME/.cache/nltk:/root/nltk_data
-      - $HOME/.cache/tts_history:/tts_cache
+      - $HOME/.cache/tts_history:/shared/tts_cache
+      - ./tts_api/text_files:/shared/text_files
