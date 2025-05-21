@@ -1,6 +1,7 @@
 # Local files
 .n8n/
 dev/
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
